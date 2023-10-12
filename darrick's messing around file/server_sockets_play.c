@@ -74,7 +74,7 @@ void server() {
         // this will set the client address etc
         // recvform(socket, storage to store sentence, size of sentence minus null termination, flags, pointer to client address, pointer to client address length)
         // returns -1 on error
-        ssize_t recv_len = recvform(server_sock, buffer, sizeof(buffer) - 1, 0, (struct sockaddr*)&client_addr, &client_addr_len);
+        ssize_t recv_len = recvfrom(server_sock, buffer, sizeof(buffer) - 1, 0, (struct sockaddr*)&client_addr, &client_addr_len);
 
         // error
         if (recv_len == -1)
