@@ -86,7 +86,8 @@ void server() {
         // Null-terminate the recieved data (end of sentence)
         buffer[recv_len] = '\0';
 
-        // if user types !, end the chat
+        // if user types !, end the chat, \n is there because client side immediately adds a \n to the end of a sentence
+        
         if (strcmp(buffer, "!\n") == 0)
         {
             printf("Darrick has ended the chat\n");
