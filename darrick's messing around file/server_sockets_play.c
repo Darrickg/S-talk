@@ -9,7 +9,9 @@
 
 // This also has a step by step guide on how to do sockets, written by yours truly. Ill try to explain whats going on with my barely understanding knowledge :D
 
-// server side
+// server side: recieves the message
+
+// start reading from here
 
 void server() {
     
@@ -26,7 +28,7 @@ void server() {
     hints.ai_flags = AI_PASSIVE;      // use local IP address
 
     // call getaddrinfo to obtain address information, basically fills in the blanks in our hints object that we didnt set
-    // NULL is the IP address, we dont specify it and the system will fill it in for us
+    // NULL is the IP address, we dont specify it and the system will fill it in for us, since we used local IP address
     // "8080 is the port number"
     // &hints is pointer to addrinfo object
     // $server_info is pointer to a linked list of addrinfo structures (this is different from our own linked list, addrinfo has its own internal linked list that connects to other addrinfos)
@@ -59,8 +61,6 @@ void server() {
         exit(EXIT_FAILURE);
     }
 
-    int check = 1;
-
     // infinite loop that will keep checking if we get a message
     while(1)
     {
@@ -90,8 +90,7 @@ void server() {
         // if user types !, end the chat
         if (strcmp(buffer, "!") == 0)
         {
-            check = 0;
-            continue;
+            break;
         }
 
         // TODO: STEP 5: process recieved data (printing it lmao)
@@ -99,6 +98,7 @@ void server() {
     }
 
     // TODO: STEP 6: free the address and close the socket
+    printf("Darrick has ended the chat\n");
     freeaddrinfo(server_info);
     close(server_sock);
 }
