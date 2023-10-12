@@ -29,7 +29,7 @@ void server() {
 
     // call getaddrinfo to obtain address information, basically fills in the blanks in our hints object that we didnt set
     // NULL is the IP address, we dont specify it and the system will fill it in for us, since we used local IP address
-    // "8080 is the port number"
+    // "8080" is the port number
     // &hints is pointer to addrinfo object
     // $server_info is pointer to a linked list of addrinfo structures (this is different from our own linked list, addrinfo has its own internal linked list that connects to other addrinfos)
     if (getaddrinfo(NULL, "8080", &hints, &server_info) != 0)
@@ -87,7 +87,7 @@ void server() {
         buffer[recv_len] = '\0';
 
         // if user types !, end the chat, \n is there because client side immediately adds a \n to the end of a sentence
-        
+
         if (strcmp(buffer, "!\n") == 0)
         {
             printf("Darrick has ended the chat\n");
