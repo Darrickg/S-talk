@@ -59,12 +59,6 @@ void client() {
         // reads message from user, stdin means standard input
         fgets(message, sizeof(message), stdin);
 
-        // check to quit
-        if (strcmp(message, "!") == 0)
-        {
-            break;
-        }
-
         // TODO: STEP 3: send the message to server
         // sendto sends data to the socket
         // sendto(socket, message, length of message, flags, address info of server, length of address)
@@ -74,10 +68,16 @@ void client() {
         {
             perror("sendto failed");
         }
+
+        // check to quit, the reason we have \n in both here and server side is because fgets immediately adds \n to message
+        if (strcmp(message, "!\n") == 0)
+        {
+            printf("you have ended the chat\n");
+            break;
+        }
     }
 
     // TODO: STEP 4: free everything
-    printf("you have ended the chat");
     freeaddrinfo(server_info);
     close(client_sock);
 }

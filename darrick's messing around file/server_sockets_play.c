@@ -74,7 +74,7 @@ void server() {
         // this will set the client address etc
         // recvform(socket, storage to store sentence, size of sentence minus null termination, flags, pointer to client address, pointer to client address length)
         // returns -1 on error
-        ssize_t recv_len = recvfrom(server_sock, buffer, sizeof(buffer) - 1, 0, (struct sockaddr*)&client_addr, &client_addr_len);
+        int recv_len = recvfrom(server_sock, buffer, sizeof(buffer) - 1, 0, (struct sockaddr*)&client_addr, &client_addr_len);
 
         // error
         if (recv_len == -1)
@@ -87,17 +87,17 @@ void server() {
         buffer[recv_len] = '\0';
 
         // if user types !, end the chat
-        if (strcmp(buffer, "!") == 0)
+        if (strcmp(buffer, "!\n") == 0)
         {
+            printf("Darrick has ended the chat\n");
             break;
         }
 
         // TODO: STEP 5: process recieved data (printing it lmao)
-        printf("Darrick says: %s\n", buffer);
+        printf("Darrick says: %s", buffer);
     }
 
     // TODO: STEP 6: free the address and close the socket
-    printf("Darrick has ended the chat\n");
     freeaddrinfo(server_info);
     close(server_sock);
 }

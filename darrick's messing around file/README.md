@@ -6,6 +6,7 @@ please read server sockets first then client sockets
 
 how to run:
 - use 2 terminals
+- dont forget to cd into the file cd darrick*
 
 terminal 1 (server, will recieve messages):
 gcc server_sockets_play.c -o server
