@@ -27,7 +27,7 @@ void client() {
     hints.ai_socktype = SOCK_DGRAM;   // UDP ip
 
     // call getaddrinfo to obtain address information, basically fills in the blanks in our hints object that we didnt set
-    // 127.0.0.1 is the IP address, we specify it here unlike in server side because FIXME:
+    // 127.0.0.1 is the IP address, we specify it here unlike in server side because 127.0.0.1 is ip server of localhost, which is what it defaults to in the server when we didnt specify it
     // "8080 is the port number"
     // &hints is pointer to addrinfo object
     // $server_info is pointer to a linked list of addrinfo structures (this is different from our own linked list, addrinfo has its own internal linked list that connects to other addrinfos)

@@ -86,7 +86,6 @@ void server() {
         // Null-terminate the recieved data (end of sentence)
         buffer[recv_len] = '\0';
 
-
         // if user types !, end the chat
         if (strcmp(buffer, "!") == 0)
         {
