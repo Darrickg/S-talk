@@ -1,3 +1,7 @@
+/*
+takes whatever is in the sent list
+sends it to the other person's reciever
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

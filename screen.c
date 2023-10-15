@@ -1,3 +1,7 @@
+/*
+takes whatever is in the recieved list
+outputs it to the screen/terminal
+*/
 typedef struct sem {
     int value;
     list_of_processes plist; //(processes blocked on this semaphore)

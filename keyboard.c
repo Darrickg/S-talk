@@ -1,3 +1,7 @@
+/*
+waits for an input from the user
+puts it in the sent list
+*/
 typedef struct sem {
     int value;
     list_of_processes plist; //(processes blocked on this semaphore)
@@ -53,3 +57,4 @@ S--;
 V(S) {
 S++;
 }
+
