@@ -25,6 +25,7 @@ void client() {
     // structure of addrinfo can be found in beej
     hints.ai_family = AF_INET;        // AF_UNSPEC means it can be for ipv4 or 6, but we are doing ipv4
     hints.ai_socktype = SOCK_DGRAM;   // UDP ip
+    hints.ai_flags = AI_PASSIVE;
 
     // call getaddrinfo to obtain address information, basically fills in the blanks in our hints object that we didnt set
     // 127.0.0.1 is the IP address, we specify it here unlike in server side because 127.0.0.1 is ip server of localhost, which is what it defaults to in the server when we didnt specify it
