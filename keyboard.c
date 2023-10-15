@@ -1,0 +1,4 @@
+/*
+waits for an input from the user
+puts it in the sent list
+*/
