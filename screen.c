@@ -103,7 +103,7 @@ void screen(List* list, pthread_mutex_t* mutex) {
             break;
         }
             
-            // FIXME: you should get their name instead of mine
+            // FIXME: should get their name instead of mine
             printf("Darrick says: %s", input);
 
             // removes an item from the list
