@@ -37,6 +37,7 @@ void client() {
     // &hints is pointer to addrinfo object
     // $server_info is pointer to a linked list of addrinfo structures (this is different from our own linked list, addrinfo has its own internal linked list that connects to other addrinfos)
     // return not 0 when failed
+    //TODO: CHANGE IP ADDRESS AND PORT NUMBER
     if (getaddrinfo("127.0.0.1", "8080", &hints, &server_info) != 0)
     {
         perror("getaddrinfo failed");
