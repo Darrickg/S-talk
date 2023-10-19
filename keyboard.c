@@ -72,7 +72,7 @@ waits for an input from the user
 puts it in the sent list
 */
 
-void keyboard(List* list, pthread_mutex_t mutex) {
+void keyboard(List* list, pthread_mutex_t* mutex) {
 
     while (1)
     {
@@ -82,6 +82,7 @@ void keyboard(List* list, pthread_mutex_t mutex) {
         fgets(input, sizeof(input), stdin);
 
         // locks the mutex before writing to the list
+        // FIXME: should i make sure the string is not empty before i lock it?
         pthread_mutex_lock(&mutex);
 
         // add to the list of words to be sent
