@@ -6,7 +6,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+
 #include "list.h"
+#include "mystructs.h"
+#include "receive.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -15,7 +18,13 @@ takes an input from the other party and puts it into the list
 
 arguments: their list, their mutex, local (our) port
 */
-void receive(List* list, pthread_mutex_t* mutex, char* port) {
+void* receive(void* arg) {
+
+    struct RecvArgs* recvArgs = (struct RecvArgs*)arg;
+
+    List* list = recvArgs->list;
+    pthread_mutex_t* mutex = recvArgs->mutex;
+    char* port = recvArgs->port;
 
     // initialize address
     struct addrinfo hints, *server_info;
@@ -86,5 +95,5 @@ void receive(List* list, pthread_mutex_t* mutex, char* port) {
     // Close the UDP socket when done
     close(udpSocket);
     freeaddrinfo(server_info);
-    return;
+    return NULL;
 }

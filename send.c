@@ -6,7 +6,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+
 #include "list.h"
+#include "mystructs.h"
+#include "send.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -16,7 +19,14 @@ checks the list to see if there is anything, send it to the other party if there
 arguments: our list, our mutex, their address, their port
 */
 
-void send(List* list, pthread_mutex_t* mutex, char* address, char* port) {
+void* send(void* arg) {
+
+    struct SendArgs* sendArgs = (struct SendArgs*)arg;
+
+    List* list = sendArgs->list;
+    pthread_mutex_t* mutex = sendArgs->mutex;
+    char* address = sendArgs->address;
+    char* port = sendArgs->port;
 
     // initialize address
     struct addrinfo hints, *server_info;
@@ -77,5 +87,5 @@ void send(List* list, pthread_mutex_t* mutex, char* address, char* port) {
     close(udpSocket);
     freeaddrinfo(server_info);
 
-    return;
+    return NULL;
 }

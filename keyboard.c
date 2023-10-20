@@ -7,7 +7,10 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <pthread.h>
+
 #include "list.h"
+#include "mystructs.h"
+#include "keyboard.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -17,9 +20,14 @@ waits for an input from the user, puts it in the sent list
 arguments: our list, our mutex
 */
 
-void keyboard(List* list, pthread_mutex_t* mutex) {
+void* keyboard(void* arg) {
 
-    while (1)
+    struct KeyboardScreenArgs* keyboardArgs = (struct KeyboardScreenArgs*)arg;
+
+    List* list = keyboardArgs->list;
+    pthread_mutex_t* mutex = keyboardArgs->mutex;
+
+    while(1)
     {
         // gets the input from user
         char input[MESSAGE_LENGTH];
@@ -50,5 +58,5 @@ void keyboard(List* list, pthread_mutex_t* mutex) {
         pthread_mutex_unlock(&mutex);
     }
 
-    return;
+    return NULL;
 }

@@ -1,7 +1,6 @@
 {
   "files.associations": {
-    "type_traits": "c",
-    "unistd.h": "c"
+    "types.h": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",
