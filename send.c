@@ -43,7 +43,8 @@ void* send(void* arg) {
 
     // create UDP socket for swending data
     int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
-    if (udpSocket == -1) {
+    if (udpSocket == -1) 
+    {
         perror("UDP socket creation in send failed");
         exit(EXIT_FAILURE);
     }
