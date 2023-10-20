@@ -1,13 +1,10 @@
 CC = gcc
-CFLAGS = -Wall -Werror -pedantic-errors
-TARGET = runFile
-SOURCE = list.c list.h test.c
+CFLAGS = -Wall -pthread
 
-$(TARGET): $(SOURCE)
-	$(CC) $(CFLAGS) -o $@ $^
+all: s_talk
 
-run: ./$(TARGET)
-	./$(TARGET)
+s_talk: main.c list.o keyboard.c screen.c receive.c send.c
+	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f s_talk
