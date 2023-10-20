@@ -10,6 +10,7 @@ sends it to the other person's reciever
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include "list.h"
 
 // This also has a step by step guide on how to do sockets, written by yours truly. Ill try to explain whats going on with my barely understanding knowledge :D
 
@@ -17,7 +18,7 @@ sends it to the other person's reciever
 
 // make sure to read the server side first
 
-void client() {
+void client(List* list, pthread_mutex_t* mutex) {
 
     // TODO: STEP 1: fill in address information using getaddrinfo
     struct addrinfo hints, *server_info;
@@ -59,6 +60,9 @@ void client() {
     // infinite loop that will check if we sent a message
     while (1)
     {
+        // locks the mutex
+        pthread_mutex_lock(&mutex);
+
         char message[1024];
         printf("Enter message to send (or '!' to quit): ");
 
@@ -78,9 +82,16 @@ void client() {
         // check to quit, the reason we have \n in both here and server side is because fgets immediately adds \n to message
         if (strcmp(message, "!\n") == 0)
         {
+            // unlocks the mutex
+            pthread_mutex_unlock(&mutex);
+
+            // TODO: we might need to change this
             printf("you have ended the chat\n");
             break;
         }
+
+        // unlocks the mutex
+        pthread_mutex_unlock(&mutex);
     }
 
     // TODO: STEP 4: free everything

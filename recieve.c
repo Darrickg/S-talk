@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include "list.h"
 
 #define MAX_LEN 1024
 #define PORT 22110
@@ -16,7 +17,7 @@
 
 // start reading from here
 
-void server() {
+void server(List* list, pthread_mutex_t* mutex) {
     
     // TODO: STEP 1: fill in address information using getaddrinfo
     struct addrinfo hints, *server_info;
@@ -68,6 +69,10 @@ void server() {
     // infinite loop that will keep checking if we get a message
     while(1)
     {
+
+        // locks the mutex
+        pthread_mutex_lock(&mutex);
+
         char buffer[MAX_LEN];                                   // the sentence
         struct sockaddr_storage client_addr;                    // structure to store client address
         socklen_t client_addr_len = sizeof(client_addr);        // size of clients address
@@ -94,6 +99,11 @@ void server() {
 
         if (strcmp(buffer, "!\n") == 0)
         {
+
+            // unlocks the mutex
+            pthread_mutex_unlock(&mutex);
+    
+
             //TODO: CHANGE THIS
             printf("Darrick has ended the chat\n");
             break;
@@ -105,6 +115,9 @@ void server() {
 
         //TODO: PUSH TO LIST HERE
         //printf("Darrick says: %s", buffer);
+
+        // unlocks the mutex
+        pthread_mutex_unlock(&mutex);
     }
 
     // TODO: STEP 6: free the address and close the socket
