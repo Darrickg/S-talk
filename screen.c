@@ -80,6 +80,8 @@
 
 /*
 takes an input from the list and prints it
+
+arguments: their list, their mutex
 */
 
 void screen(List* list, pthread_mutex_t* mutex) {
@@ -98,13 +100,13 @@ void screen(List* list, pthread_mutex_t* mutex) {
 
             if (strcmp(input, "!\n") == 0)
             {
-            printf("Darrick has ended the chat\n");
+            printf("screen: they have ended the chat\n");
             pthread_mutex_unlock(&mutex);
             break;
             }
             
             // FIXME: should get their name instead of mine
-            printf("Darrick says: %s", input);
+            printf("They said: %s", input);
 
             // removes an item from the list
             List_remove(list);

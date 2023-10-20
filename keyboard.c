@@ -68,8 +68,9 @@
 #define MESSAGE_LENGTH 1024
 
 /*
-waits for an input from the user
-puts it in the sent list
+waits for an input from the user, puts it in the sent list
+
+arguments: our list, our mutex
 */
 
 void keyboard(List* list, pthread_mutex_t* mutex) {
@@ -96,7 +97,7 @@ void keyboard(List* list, pthread_mutex_t* mutex) {
         if (strcmp(input, "!\n") == 0)
         {
             // unlocks the mutex and exit loop
-            printf("You have ended the chat");
+            printf("keyboard: you have ended the chat");
             pthread_mutex_unlock(&mutex);
             break;
         }
