@@ -19,12 +19,12 @@ checks the list to see if there is anything, send it to the other party if there
 arguments: our list, our mutex, their address, their port
 */
 
-void* send(void* arg) {
+void* sends(void* arg) {
 
     struct SendArgs* sendArgs = (struct SendArgs*)arg;
 
     List* list = sendArgs->list;
-    pthread_mutex_t* mutex = sendArgs->mutex;
+    pthread_mutex_t mutex = sendArgs->mutex;
     char* address = sendArgs->address;
     char* port = sendArgs->port;
 

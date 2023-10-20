@@ -25,7 +25,7 @@ void* keyboard(void* arg) {
     struct KeyboardScreenArgs* keyboardArgs = (struct KeyboardScreenArgs*)arg;
 
     List* list = keyboardArgs->list;
-    pthread_mutex_t* mutex = keyboardArgs->mutex;
+    pthread_mutex_t mutex = keyboardArgs->mutex;
 
     while(1)
     {

@@ -23,7 +23,7 @@ void* receive(void* arg) {
     struct RecvArgs* recvArgs = (struct RecvArgs*)arg;
 
     List* list = recvArgs->list;
-    pthread_mutex_t* mutex = recvArgs->mutex;
+    pthread_mutex_t mutex = recvArgs->mutex;
     char* port = recvArgs->port;
 
     // initialize address

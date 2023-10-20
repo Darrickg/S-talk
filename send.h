@@ -3,6 +3,6 @@
 
 #include "list.h"
 
-void* send(void* arg);
+void* sends(void* arg);
 
 #endif

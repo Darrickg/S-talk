@@ -25,7 +25,7 @@ void* screen(void* arg) {
     struct KeyboardScreenArgs* screenArgs = (struct KeyboardScreenArgs*)arg;
 
     List* list = screenArgs->list;
-    pthread_mutex_t* mutex = screenArgs->mutex;
+    pthread_mutex_t mutex = screenArgs->mutex;
 
     while(1)
     {
