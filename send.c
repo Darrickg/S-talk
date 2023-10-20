@@ -1,7 +1,3 @@
-/*
-takes whatever is in the sent list
-sends it to the other person's reciever
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,91 +8,74 @@ sends it to the other person's reciever
 #include <netdb.h>
 #include "list.h"
 
-// This also has a step by step guide on how to do sockets, written by yours truly. Ill try to explain whats going on with my barely understanding knowledge :D
+#define MESSAGE_LENGTH 1024
 
-// client side: sends the message
+/*
+checks the list to see if there is anything, send it to the other party if there is
 
-// make sure to read the server side first
+arguments: our list, our mutex, their address, their port
+*/
 
-void client(List* list, pthread_mutex_t* mutex) {
+void send(List* list, pthread_mutex_t* mutex, char* address, char* port) {
 
-    // TODO: STEP 1: fill in address information using getaddrinfo
+    // initialize address
     struct addrinfo hints, *server_info;
-
-    // making sure struct is empty
     memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET; // IPv4
+    hints.ai_socktype = SOCK_DGRAM; // UDP
 
-    // set family, socket type, type of IP address (i think?)
-    // structure of addrinfo can be found in beej
-    hints.ai_family = AF_INET;        // AF_UNSPEC means it can be for ipv4 or 6, but we are doing ipv4
-    hints.ai_socktype = SOCK_DGRAM;   // UDP ip
-    hints.ai_flags = AI_PASSIVE;
-
-    // call getaddrinfo to obtain address information, basically fills in the blanks in our hints object that we didnt set
-    // 127.0.0.1 is the IP address, we specify it here unlike in server side because 127.0.0.1 is ip server of localhost, which is what it defaults to in the server when we didnt specify it
-    // "8080 is the port number"
-    // &hints is pointer to addrinfo object
-    // $server_info is pointer to a linked list of addrinfo structures (this is different from our own linked list, addrinfo has its own internal linked list that connects to other addrinfos)
-    // return not 0 when failed
-    //TODO: CHANGE IP ADDRESS AND PORT NUMBER
-    if (getaddrinfo("127.0.0.1", "8080", &hints, &server_info) != 0)
+    // gets address information
+    if (getaddrinfo(address, port, &hints, &server_info) != 0)
     {
-        perror("getaddrinfo failed");
+        perror("getaddrinfo in send failed");
         exit(EXIT_FAILURE);
     }
 
-    // TODO: STEP 2: create a socket (the thing that will recieve and send our messages, an "airport" if u will)
-    // SF_INET and SOCK_DGRAM refers to it being ipv4 and UDP
-    // 0 means use default protocol
-    // return -1 if failed
-    int client_sock = socket(AF_INET, SOCK_DGRAM, 0);
-
-    if (client_sock == -1)
-    {
-        perror("Socket creation failed");
+    // create UDP socket for swending data
+    int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+    if (udpSocket == -1) {
+        perror("UDP socket creation in send failed");
         exit(EXIT_FAILURE);
     }
 
-    // infinite loop that will check if we sent a message
-    while (1)
+    while(1)
     {
         // locks the mutex
         pthread_mutex_lock(&mutex);
 
-        char message[1024];
-        printf("Enter message to send (or '!' to quit): ");
+        // if the list isnt empty
+        if (List_count(list) > 0)
+        {  
+            // gets the message at the top of the queue
+            // FIXME: im not sure if this is how u get a string from list
+            char input[MESSAGE_LENGTH] = List_first(list);
 
-        // FIXME: list stuff is supposed to go here but im not sure what fgets does?
+            int send_len = sendto(udpSocket, input, strlen(input), 0, server_info->ai_addr, server_info->ai_addrlen);
 
-        // reads message from user, stdin means standard input
-        fgets(message, sizeof(message), stdin);
+            if (send_len == -1)
+            {
+                perror("sendto failed");
+            }
 
-        // TODO: STEP 3: send the message to server
-        // sendto sends data to the socket
-        // sendto(socket, message, length of message, flags, address info of server, length of address)
-        ssize_t send_len = sendto(client_sock, message, strlen(message), 0, server_info->ai_addr, server_info->ai_addrlen);
+            if (strcmp(input, "!\n") == 0)
+            {
+                printf("Send: You have ended the chat\n");
+                pthread_mutex_unlock(&mutex);
+                break;
+            }
 
-        if (send_len == -1)
-        {
-            perror("sendto failed");
+            // removes an item from the list
+            List_remove(list);
+
         }
 
-        // check to quit, the reason we have \n in both here and server side is because fgets immediately adds \n to message
-        if (strcmp(message, "!\n") == 0)
-        {
-            // unlocks the mutex
-            pthread_mutex_unlock(&mutex);
-
-            // TODO: we might need to change this
-            printf("you have ended the chat\n");
-            break;
-        }
-
-        // unlocks the mutex
         pthread_mutex_unlock(&mutex);
+
     }
 
-    // TODO: STEP 4: free everything
+    // close UDP sockets when done
+    close(udpSocket);
     freeaddrinfo(server_info);
-    close(client_sock);
+
+    return;
 }

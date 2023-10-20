@@ -97,11 +97,11 @@ void screen(List* list, pthread_mutex_t* mutex) {
             char input[MESSAGE_LENGTH] = List_first(list);
 
             if (strcmp(input, "!\n") == 0)
-        {
+            {
             printf("Darrick has ended the chat\n");
             pthread_mutex_unlock(&mutex);
             break;
-        }
+            }
             
             // FIXME: should get their name instead of mine
             printf("Darrick says: %s", input);

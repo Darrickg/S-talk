@@ -9,15 +9,15 @@
 #include "list.h"
 
 #define MESSAGE_LENGTH 1024
-#define PORT 22110
 
 /*
 takes an input from the other party and puts it into the list
 
-arguments: input list, input mutex, local (our) port
+arguments: their list, their mutex, local (our) port
 */
 void receive(List* list, pthread_mutex_t* mutex, char* port) {
 
+    // initialize address
     struct addrinfo hints, *server_info;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET; // IPv4
