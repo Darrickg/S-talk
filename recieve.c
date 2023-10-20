@@ -109,12 +109,15 @@ void server(List* list, pthread_mutex_t* mutex) {
             break;
         }
 
-        // TODO: STEP 5: process recieved data (printing it lmao)
+        // TODO: STEP 5: process recieved data (printing it lmao) FIXME: dina what is this
         int termindateIdx = (recv_len < MAX_LEN) ? recv_len : MAX_LEN - 1;
         buffer[termindateIdx] = 0; 
 
-        //TODO: PUSH TO LIST HERE
-        //printf("Darrick says: %s", buffer);
+        //FIXME: pushing list, i think this is correct?
+        if (strcmp(buffer, "") == 0)
+        {
+            List_append(list, buffer);
+        }
 
         // unlocks the mutex
         pthread_mutex_unlock(&mutex);

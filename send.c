@@ -66,6 +66,8 @@ void client(List* list, pthread_mutex_t* mutex) {
         char message[1024];
         printf("Enter message to send (or '!' to quit): ");
 
+        // FIXME: list stuff is supposed to go here but im not sure what fgets does?
+
         // reads message from user, stdin means standard input
         fgets(message, sizeof(message), stdin);
 
