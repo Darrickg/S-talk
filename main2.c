@@ -10,8 +10,8 @@
 #include "send.h"
 
 #define THEIRADDRESS "127.0.0.1"
-#define OURPORT "8080"
-#define THEIRPORT "8081"
+#define OURPORT "8081"
+#define THEIRPORT "8080"
 
 int main() {
 
