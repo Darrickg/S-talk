@@ -37,7 +37,7 @@ void* screen(void* arg) {
         {  
             // prints the message at the top of the queue
             // FIXME: im not sure if this is how u print a string from an input
-            char input[MESSAGE_LENGTH] = List_first(list);
+            char* input = List_first(list);
 
             if (strcmp(input, "!\n") == 0)
             {

@@ -59,7 +59,7 @@ void* sends(void* arg) {
         {  
             // gets the message at the top of the queue
             // FIXME: im not sure if this is how u get a string from list
-            char input[MESSAGE_LENGTH] = List_first(list);
+            char* input = List_first(list);
 
             int send_len = sendto(udpSocket, input, strlen(input), 0, server_info->ai_addr, server_info->ai_addrlen);
 
