@@ -34,28 +34,29 @@ void* keyboard(void* arg) {
         printf("Enter message to send (or '!' to quit): ");
         fgets(input, sizeof(input), stdin);
 
-        // locks the mutex before writing to the list
-        // FIXME: should i make sure the string is not empty before i lock it?
-        pthread_mutex_lock(&mutex);
-
         // add to the list of words to be sent
         // FIXME: im not actually sure if this is how add it to the list
-        if (strcmp(input, "") == 0)
+        if (strcmp(input, "\n") != 0)
         {
+            // locks the mutex before writing to the list
+            // FIXME: should i make sure the string is not empty before i lock it?
+            pthread_mutex_lock(&mutex);
+
             List_append(list, input);
+
+            // unlocks the mutex
+            pthread_mutex_unlock(&mutex);
         }
 
         // check to see if the user wants to exit
         if (strcmp(input, "!\n") == 0)
         {
             // unlocks the mutex and exit loop
-            printf("keyboard: you have ended the chat");
+            printf("keyboard: you have ended the chat\n");
             pthread_mutex_unlock(&mutex);
             break;
         }
 
-        // unlocks the mutex
-        pthread_mutex_unlock(&mutex);
     }
 
     return NULL;

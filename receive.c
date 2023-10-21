@@ -72,14 +72,17 @@ void* receive(void* arg) {
 
         input[recv_len] = '\0';
 
-        // locks the mutex
-        pthread_mutex_lock(&mutex);
-
         // push into list
         // FIXME: im not actually sure if this is how add it to the list
-        if (strcmp(input, "") == 0)
+        if (strcmp(input, "\n") != 0)
         {
+            // locks the mutex
+            pthread_mutex_lock(&mutex);
+
             List_append(list, input);
+
+            // unlocks mutex
+            pthread_mutex_unlock(&mutex);
         }
 
         if (strcmp(input, "!\n") == 0)
@@ -89,7 +92,6 @@ void* receive(void* arg) {
             break;
         }
 
-        pthread_mutex_unlock(&mutex);
     }
 
     // Close the UDP socket when done
