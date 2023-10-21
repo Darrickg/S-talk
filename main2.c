@@ -13,13 +13,13 @@
 #define OURPORT "8081"
 #define THEIRPORT "8080"
 
-int main() {
+int main(int argc, char * argv[]) {
 
     // address and port stuff
     // FIXME: obviously this needs to change
-    char* theirAddress = THEIRADDRESS;
-    char* ourPort = OURPORT;
-    char* theirPort = THEIRPORT;
+    char* theirAddress = THEIRADDRESS; // argv[2];
+    char* ourPort = OURPORT; //argv[1];
+    char* theirPort = THEIRPORT; //argv[3];
 
     // initialise lists
     List* ourList = List_create();
