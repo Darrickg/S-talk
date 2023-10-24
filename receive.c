@@ -57,7 +57,6 @@ void* receive(void* arg) {
         perror("UDP socket bind failed");
         exit(EXIT_FAILURE);
     }
-    printf("Send: You have ended the chat\n");
 
     while(1)
     {
@@ -80,7 +79,7 @@ void* receive(void* arg) {
         if (strcmp(input, "\n") != 0)
         {
             //TODO: enqueue with mutex!
-             printf("YOU HAVE RECEIVED A MESSAGE\n");
+            printf("YOU HAVE RECEIVED A MESSAGE\n");
             printf("%s \n", input);
         }
 
