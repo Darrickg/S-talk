@@ -11,6 +11,7 @@
 #include "list.h"
 #include "mystructs.h"
 #include "screen.h"
+#include "manage_thread.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -41,9 +42,10 @@ void* screen(void* arg) {
 
             if (strcmp(input, "!\n") == 0)
             {
-            printf("screen: they have ended the chat\n");
-            pthread_mutex_unlock(&mutex);
-            break;
+                printf("screen: they have ended the chat\n");
+                pthread_mutex_unlock(&mutex);
+                cancelScreen();
+                break;
             }
             
             // FIXME: should get their name instead of mine

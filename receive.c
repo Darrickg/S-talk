@@ -10,6 +10,7 @@
 #include "list.h"
 #include "mystructs.h"
 #include "receive.h"
+#include "manage_thread.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -87,9 +88,9 @@ void* receive(void* arg) {
 
         if (strcmp(input, "!\n") == 0)
         {   
-
             pthread_mutex_unlock(&mutex);
             printf("recv: they ended the chat\n");
+            cancelReceive();
             break;
         }
 

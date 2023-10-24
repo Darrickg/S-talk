@@ -1,6 +1,7 @@
 {
   "files.associations": {
-    "types.h": "c"
+    "types.h": "c",
+    "manage_thread.h": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

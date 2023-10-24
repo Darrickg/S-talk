@@ -11,6 +11,7 @@
 #include "list.h"
 #include "mystructs.h"
 #include "keyboard.h"
+#include "manage_thread.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -54,6 +55,7 @@ void* keyboard(void* arg) {
             // unlocks the mutex and exit loop
             printf("keyboard: you have ended the chat\n");
             pthread_mutex_unlock(&mutex);
+            cancelKeyboard();
             break;
         }
 

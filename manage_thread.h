@@ -1,11 +1,11 @@
 #ifndef MANAGE_THREAD_H
 #define MANAGE_THREAD_H
 
-void initialize_system(char* myP, char* theirP, char* theirAdd);
-void initialize_threads();
-void cancelSystemFromSender();
-void cancelSystemFromReceiver();
-void shutdown_threads();
-void shutdown_system();
+void initialize_threads(pthread_t keyboard, pthread_t screen, pthread_t receive, pthread_t send);
+void cancelReceive();
+void cancelKeyboard();
+void cancelScreen();
+void cancelSend();
+
 
 #endif

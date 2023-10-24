@@ -10,6 +10,7 @@
 #include "list.h"
 #include "mystructs.h"
 #include "send.h"
+#include "manage_thread.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -72,6 +73,7 @@ void* sends(void* arg) {
             {
                 printf("Send: You have ended the chat\n");
                 pthread_mutex_unlock(&mutex);
+                cancelSend();
                 break;
             }
 
