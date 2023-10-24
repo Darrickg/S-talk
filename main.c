@@ -8,12 +8,14 @@
 #include "screen.h"
 #include "receive.h"
 #include "send.h"
+#include "flag.h"
 
 #define THEIRADDRESS "127.0.0.1"
 #define OURPORT "8080"
 #define THEIRPORT "8081"
 
 int main() {
+    initiateFlag();
 
     // address and port stuff
     // FIXME: obviously this needs to change

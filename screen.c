@@ -11,7 +11,7 @@
 #include "list.h"
 #include "mystructs.h"
 #include "screen.h"
-#include "manage_thread.h"
+#include "flag.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -40,11 +40,11 @@ void* screen(void* arg) {
             // FIXME: im not sure if this is how u print a string from an input
             char* input = List_first(list);
 
-            if (strcmp(input, "!\n") == 0)
-            {
+            if (strcmp(input, "!\n") == 0 || getFlag() == 1)
+            {   
+                flipSwitch();
                 printf("screen: they have ended the chat\n");
                 pthread_mutex_unlock(&mutex);
-                cancelScreen();
                 break;
             }
             
