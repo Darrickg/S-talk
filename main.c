@@ -8,6 +8,7 @@
 #include "screen.h"
 #include "receive.h"
 #include "send.h"
+#include "manage_thread.h"
 
 #define THEIRADDRESS "127.0.0.1"
 #define OURPORT "8080"
@@ -60,10 +61,12 @@ int main() {
     // create and start threads
     pthread_t keyboardThread, screenThread, receiveThread, sendThread;
 
-    pthread_create(&keyboardThread, NULL, keyboard, (void*)&keyboardArgs);
-    pthread_create(&screenThread, NULL, screen, (void*)&screenArgs);
-    pthread_create(&receiveThread, NULL, receive, (void*)&recvArgs);
-    pthread_create(&sendThread, NULL, sends, (void*)&sendArgs);
+    // pthread_create(&keyboardThread, NULL, keyboard, (void*)&keyboardArgs);
+    // pthread_create(&screenThread, NULL, screen, (void*)&screenArgs);
+    // pthread_create(&receiveThread, NULL, receive, (void*)&recvArgs);
+    // pthread_create(&sendThread, NULL, sends, (void*)&sendArgs);
+
+    initialize_threads(pthread_create(&keyboardThread, NULL, keyboard, (void*)&keyboardArgs), pthread_create(&screenThread, NULL, screen, (void*)&screenArgs), pthread_create(&receiveThread, NULL, receive, (void*)&recvArgs), pthread_create(&sendThread, NULL, sends, (void*)&sendArgs));
 
     // wait for threads to finish
     pthread_join(keyboardThread, NULL);

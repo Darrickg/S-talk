@@ -24,7 +24,7 @@ void* receive(void* arg) {
     struct RecvArgs* recvArgs = (struct RecvArgs*)arg;
 
     List* list = recvArgs->list;
-    pthread_mutex_t mutex = recvArgs->our_mutex;
+    pthread_mutex_t mutex = recvArgs->their_mutex;
     char* port = recvArgs->port;
 
     // initialize address
@@ -89,7 +89,9 @@ void* receive(void* arg) {
         if (strcmp(input, "!\n") == 0)
         {   
             pthread_mutex_unlock(&mutex);
-            pthread_mutex_unlock(&recvArgs->their_mutex);
+            pthread_mutex_unlock(&recvArgs->our_mutex);
+            cancelKeyboard();
+            cancelSend();
             printf("recv: they ended the chat\n");
             break;
         }
