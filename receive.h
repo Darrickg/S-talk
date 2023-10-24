@@ -4,6 +4,8 @@
 #include "list.h"
 
 void* receive(void* arg);
-void receiver_shutdown(void);
+void receive_init(void);
+void receiver_cancel();
+void receiver_shutdown();
 
 #endif

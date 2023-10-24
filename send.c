@@ -6,10 +6,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <pthread.h>
 
 #include "list.h"
-#include "mystructs.h"
 #include "send.h"
+#include "manage_lists.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -18,31 +19,30 @@ checks the list to see if there is anything, send it to the other party if there
 
 arguments: our list, our mutex, their address, their port
 */
+static List *list;
+static pthread_t sendThread; 
+static struct addrinfo *server_info;
+static int udpSocket;
+static pthread_mutex_t sendAvailableCondMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t sendAvailableCond = PTHREAD_COND_INITIALIZER; // initlizing con here
+ 
 
 void* sends(void* arg) {
-
-    struct SendArgs* sendArgs = (struct SendArgs*)arg;
-
-    List* list = sendArgs->list;
-    pthread_mutex_t mutex = sendArgs->mutex;
-    char* address = sendArgs->address;
-    char* port = sendArgs->port;
-
     // initialize address
-    struct addrinfo hints, *server_info;
+    struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET; // IPv4
     hints.ai_socktype = SOCK_DGRAM; // UDP
 
     // gets address information
-    if (getaddrinfo(address, port, &hints, &server_info) != 0)
+    if (getaddrinfo(getTheirAddress(), getTheirPort(), &hints, &server_info) != 0)
     {
         perror("getaddrinfo in send failed");
         exit(EXIT_FAILURE);
     }
 
     // create UDP socket for swending data
-    int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+    udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
     if (udpSocket == -1) 
     {
         perror("UDP socket creation in send failed");
@@ -51,9 +51,8 @@ void* sends(void* arg) {
 
     while(1)
     {
-        // locks the mutex
-        pthread_mutex_lock(&mutex);
-
+        send_signal();
+        //TODO: dequeue message!
         // if the list isnt empty
         if (List_count(list) > 0)
         {  
@@ -71,7 +70,6 @@ void* sends(void* arg) {
             if (strcmp(input, "!\n") == 0)
             {
                 printf("Send: You have ended the chat\n");
-                pthread_mutex_unlock(&mutex);
                 break;
             }
 
@@ -79,14 +77,32 @@ void* sends(void* arg) {
             List_remove(list);
 
         }
-
-        pthread_mutex_unlock(&mutex);
-
     }
 
     // close UDP sockets when done
-    close(udpSocket);
-    freeaddrinfo(server_info);
-
+    
     return NULL;
+}
+
+void send_init(){
+    list = getSendList();
+    pthread_create(&sendThread, NULL, sends, NULL);
+}
+
+void send_signal(){
+    pthread_mutex_lock(&sendAvailableCondMutex);
+    {
+        pthread_cond_signal(&sendAvailableCond); 
+    }
+    pthread_mutex_unlock(&sendAvailableCondMutex);
+}
+
+void send_cancel(){
+     pthread_cancel(sendThread);
+}
+void send_shutdown(){
+    freeaddrinfo(server_info);
+    close(udpSocket);
+
+    pthread_join(sendThread, NULL);
 }

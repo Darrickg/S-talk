@@ -9,10 +9,14 @@
 #include <pthread.h>
 
 #include "list.h"
-#include "mystructs.h"
 #include "screen.h"
+#include "send.h"
+#include "manage_lists.h"
 
 #define MESSAGE_LENGTH 1024
+
+static List *list;
+static pthread_t screenThread;
 
 /*
 takes an input from the list and prints it
@@ -22,15 +26,8 @@ arguments: their list, their mutex
 
 void* screen(void* arg) {
 
-    struct KeyboardScreenArgs* screenArgs = (struct KeyboardScreenArgs*)arg;
-
-    List* list = screenArgs->list;
-    pthread_mutex_t mutex = screenArgs->mutex;
-
     while(1)
     {
-        // locks the mutex
-        pthread_mutex_lock(&mutex);
 
         // if the list isnt empty
         if (List_count(list) > 0)
@@ -39,11 +36,13 @@ void* screen(void* arg) {
             // FIXME: im not sure if this is how u print a string from an input
             char* input = List_first(list);
 
-            if (strcmp(input, "!\n") == 0)
-            {
-            printf("screen: they have ended the chat\n");
-            pthread_mutex_unlock(&mutex);
-            break;
+            //TODO: enqueue message!
+
+            if (strcmp(input, "!\n") == 0){
+                send_signal();
+                cancelSystemFromSender();
+                printf("screen: they have ended the chat\n");
+                break;
             }
             
             // FIXME: should get their name instead of mine
@@ -52,10 +51,23 @@ void* screen(void* arg) {
             // removes an item from the list
             List_remove(list);
         }
+        send_signal();
 
-        // unlocks the mutex
-        pthread_mutex_unlock(&mutex);
     }
 
     return NULL;
+}
+
+void screen_init(void){
+    list = getReceiveList();
+    pthread_create(&screenThread, NULL, screen, NULL);
+}
+
+void screen_cancel(){
+    pthread_cancel(screenThread);
+}
+
+void screen_shutdown(){
+
+    pthread_join(screenThread, NULL);
 }

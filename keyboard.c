@@ -9,10 +9,13 @@
 #include <pthread.h>
 
 #include "list.h"
-#include "mystructs.h"
 #include "keyboard.h"
 
 #define MESSAGE_LENGTH 1024
+
+static pthread_t keyboardThread;
+static pthread_mutex_t writeAvailableCondMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t writeAvailableCond = PTHREAD_COND_INITIALIZER;
 
 /*
 waits for an input from the user, puts it in the sent list
@@ -22,13 +25,12 @@ arguments: our list, our mutex
 
 void* keyboard(void* arg) {
 
-    struct KeyboardScreenArgs* keyboardArgs = (struct KeyboardScreenArgs*)arg;
-
-    List* list = keyboardArgs->list;
-    pthread_mutex_t mutex = keyboardArgs->mutex;
-
     while(1)
     {
+        keyboard_signal();
+
+        //TODO: dequeue from list
+
         // gets the input from user
         char input[MESSAGE_LENGTH];
         printf("Enter message to send (or '!' to quit): ");
@@ -40,12 +42,10 @@ void* keyboard(void* arg) {
         {
             // locks the mutex before writing to the list
             // FIXME: should i make sure the string is not empty before i lock it?
-            pthread_mutex_lock(&mutex);
 
-            List_append(list, input);
+            //TODO: enqueue on to list!
 
             // unlocks the mutex
-            pthread_mutex_unlock(&mutex);
         }
 
         // check to see if the user wants to exit
@@ -53,11 +53,30 @@ void* keyboard(void* arg) {
         {
             // unlocks the mutex and exit loop
             printf("keyboard: you have ended the chat\n");
-            pthread_mutex_unlock(&mutex);
             break;
         }
 
     }
 
     return NULL;
+}
+
+void keyboard_init(void){
+    pthread_create(&keyboardThread, NULL, keyboard, NULL);
+}
+
+void keyboard_signal(){
+    pthread_mutex_lock(&writeAvailableCondMutex);
+    {
+        pthread_cond_wait(&writeAvailableCond, &writeAvailableCondMutex);
+    }
+    pthread_mutex_unlock(&writeAvailableCondMutex);
+}
+
+void keyboard_cancel(){
+    pthread_cancel(keyboardThread);
+}
+
+void keyboard_shutdown(){
+    pthread_join(keyboardThread, NULL);
 }

@@ -6,12 +6,20 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <pthread.h>
 
 #include "list.h"
-#include "mystructs.h"
 #include "receive.h"
+#include "screen.h"
+#include "manage_lists.h"
+#include "keyboard.h"
 
 #define MESSAGE_LENGTH 1024
+
+static pthread_t receiveThread;
+static int udpSocket;
+static struct addrinfo *server_info;
+static List *list;
 
 /*
 takes an input from the other party and puts it into the list
@@ -20,14 +28,8 @@ arguments: their list, their mutex, local (our) port
 */
 void* receive(void* arg) {
 
-    struct RecvArgs* recvArgs = (struct RecvArgs*)arg;
-
-    List* list = recvArgs->list;
-    pthread_mutex_t mutex = recvArgs->mutex;
-    char* port = recvArgs->port;
-
     // initialize address
-    struct addrinfo hints, *server_info;
+    struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET; // IPv4
     hints.ai_socktype = SOCK_DGRAM; // UDP
@@ -35,14 +37,14 @@ void* receive(void* arg) {
 
     // gets address information
     // FIXME: some of the variables might need to be changed
-    if (getaddrinfo(NULL, port, &hints, &server_info) != 0)
+    if (getaddrinfo(NULL, getMyPort(), &hints, &server_info) != 0)
     {
         perror("getaddrinfo in recv failed");
         exit(EXIT_FAILURE);
     }
 
     // create UDP socket for receiving data
-    int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+    udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
     if (udpSocket == -1) 
     {
         perror("UDP socket creation in recv failed");
@@ -51,9 +53,11 @@ void* receive(void* arg) {
 
     // bind socket to local address
     if (bind(udpSocket, server_info->ai_addr, server_info->ai_addrlen) == -1) {
+        close(udpSocket);
         perror("UDP socket bind failed");
         exit(EXIT_FAILURE);
     }
+    printf("Send: You have ended the chat\n");
 
     while(1)
     {
@@ -73,29 +77,39 @@ void* receive(void* arg) {
         input[recv_len] = '\0';
 
         // push into list
-        // FIXME: im not actually sure if this is how add it to the list
         if (strcmp(input, "\n") != 0)
         {
-            // locks the mutex
-            pthread_mutex_lock(&mutex);
-
-            List_append(list, input);
-
-            // unlocks mutex
-            pthread_mutex_unlock(&mutex);
+            //TODO: enqueue with mutex!
+             printf("YOU HAVE RECEIVED A MESSAGE\n");
+            printf("%s \n", input);
         }
 
         if (strcmp(input, "!\n") == 0)
-        {
-            pthread_mutex_unlock(&mutex);
+        {   
+            keyboard_signal();
+            cancelSystemFromReceiver();
             printf("recv: they ended the chat\n");
             break;
         }
 
+        keyboard_signal();
     }
 
-    // Close the UDP socket when done
-    close(udpSocket);
     freeaddrinfo(server_info);
     return NULL;
+}
+
+void receive_init(){
+    list = getReceiveList();
+    pthread_create(&receiveThread, NULL, receive, NULL);
+}
+
+void receiver_cancel(){
+    pthread_cancel(receiveThread);
+}
+
+void receiver_shutdown(){
+    close(udpSocket);
+    freeaddrinfo(server_info);
+    pthread_join(receiveThread, NULL);
 }
