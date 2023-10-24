@@ -15,7 +15,8 @@ static char* myPort;        // myport
 static char* theirPort;     // theirport
 static char* theirAddress;  // theiraddress
 
-static pthread_mutex_t queueMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t receiveMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t sendMutex = PTHREAD_MUTEX_INITIALIZER;
 
 void initalize_system(char* myP, char* theirP, char* theirAdd) {
     sendList = List_create();
@@ -33,25 +34,12 @@ List* getSendList(){
     return sendList;
 }
 
-int enqueueLists(List* list, char* message){
-    int prepVal;
-    pthread_mutex_lock(&queueMutex);
-    {
-        prepVal = List_append(list, message);
-    }
-    pthread_mutex_unlock(&queueMutex);
-    return prepVal;
+int lockMutex(pthread_mutex_t mutex){
+    pthread_mutex_lock(&mutex);
 }
 
-char* dequeueLists(List* list){
-    char* message;
-    pthread_mutex_lock(&queueMutex);
-    {
-        message = List_trim(list);
-    }
-    pthread_mutex_unlock(&queueMutex);
-
-    return message;
+int unlockMutex(pthread_mutex_t mutex){
+    pthread_mutex_unlock(&mutex);
 }
 
 char* getMyPort(){

@@ -9,9 +9,9 @@ List* getReceiveList();
 
 List* getSendList();
 
-int enqueueLists(List* list, char* message);
+int lockMutex(pthread_mutex_t mutex);
 
-char* dequeueLists(List* list);
+int unlockMutex(pthread_mutex_t mutex);
 
 char* getMyPort();
 

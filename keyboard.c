@@ -53,6 +53,7 @@ void* keyboard(void* arg) {
         {
             // unlocks the mutex and exit loop
             printf("keyboard: you have ended the chat\n");
+            lockMutex()
             break;
         }
 
