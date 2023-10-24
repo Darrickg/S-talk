@@ -15,18 +15,21 @@
 
 struct KeyboardScreenArgs {
     List* list;
-    pthread_mutex_t mutex;
+    pthread_mutex_t our_mutex;
+    pthread_mutex_t their_mutex;
 };
 
 struct RecvArgs {
     List* list;
-    pthread_mutex_t mutex;
+    pthread_mutex_t our_mutex;
+    pthread_mutex_t their_mutex;
     char* port;
 };
 
 struct SendArgs {
     List* list;
-    pthread_mutex_t mutex;
+    pthread_mutex_t our_mutex;
+    pthread_mutex_t their_mutex;
     char* address;
     char* port;
 };

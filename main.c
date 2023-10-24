@@ -36,20 +36,24 @@ int main() {
     // create structs
     struct KeyboardScreenArgs keyboardArgs;
     keyboardArgs.list = ourList;
-    keyboardArgs.mutex = ourMutex;
+    keyboardArgs.our_mutex = ourMutex;
+    keyboardArgs.their_mutex = theirMutex;
 
     struct KeyboardScreenArgs screenArgs;
     screenArgs.list = theirList;
-    screenArgs.mutex = theirMutex;
+    screenArgs.our_mutex = theirMutex;
+    screenArgs.their_mutex = ourMutex;
 
     struct RecvArgs recvArgs;
     recvArgs.list = theirList;
-    recvArgs.mutex = theirMutex;
+    recvArgs.our_mutex = theirMutex;
+    recvArgs.their_mutex = ourMutex;
     recvArgs.port = ourPort;
 
     struct SendArgs sendArgs;
     sendArgs.list = ourList;
-    sendArgs.mutex = ourMutex;
+    sendArgs.our_mutex = ourMutex;
+    sendArgs.their_mutex = theirMutex;
     sendArgs.address = theirAddress;
     sendArgs.port = theirPort;
 

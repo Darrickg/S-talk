@@ -25,7 +25,7 @@ void* sends(void* arg) {
     struct SendArgs* sendArgs = (struct SendArgs*)arg;
 
     List* list = sendArgs->list;
-    pthread_mutex_t mutex = sendArgs->mutex;
+    pthread_mutex_t mutex = sendArgs->our_mutex;
     char* address = sendArgs->address;
     char* port = sendArgs->port;
 
@@ -73,6 +73,7 @@ void* sends(void* arg) {
             {
                 printf("Send: You have ended the chat\n");
                 pthread_mutex_unlock(&mutex);
+                pthread_mutex_unlock(&sendArgs->their_mutex);
                 break;
             }
 
