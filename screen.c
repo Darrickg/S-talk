@@ -25,7 +25,7 @@ void* screen(void* arg) {
     struct KeyboardScreenArgs* screenArgs = (struct KeyboardScreenArgs*)arg;
 
     List* list = screenArgs->list;
-    pthread_mutex_t mutex = screenArgs->mutex;
+    pthread_mutex_t mutex = screenArgs->our_mutex;
 
     while(1)
     {
@@ -43,6 +43,7 @@ void* screen(void* arg) {
             {
             printf("screen: they have ended the chat\n");
             pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&screenArgs->their_mutex);
             break;
             }
             

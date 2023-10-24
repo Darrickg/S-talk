@@ -25,7 +25,7 @@ void* keyboard(void* arg) {
     struct KeyboardScreenArgs* keyboardArgs = (struct KeyboardScreenArgs*)arg;
 
     List* list = keyboardArgs->list;
-    pthread_mutex_t mutex = keyboardArgs->mutex;
+    pthread_mutex_t mutex = keyboardArgs->our_mutex;
 
     while(1)
     {
@@ -54,6 +54,7 @@ void* keyboard(void* arg) {
             // unlocks the mutex and exit loop
             printf("keyboard: you have ended the chat\n");
             pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&keyboardArgs->their_mutex);
             break;
         }
 
