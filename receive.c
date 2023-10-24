@@ -86,7 +86,8 @@ void* receive(void* arg) {
         }
 
         if (strcmp(input, "!\n") == 0)
-        {
+        {   
+
             pthread_mutex_unlock(&mutex);
             printf("recv: they ended the chat\n");
             break;
