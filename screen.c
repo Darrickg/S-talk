@@ -44,7 +44,7 @@ void* screen(void* arg) {
             {
                 printf("screen: they have ended the chat\n");
                 pthread_mutex_unlock(&mutex);
-            pthread_mutex_unlock(&screenArgs->their_mutex);
+                pthread_mutex_unlock(&screenArgs->their_mutex);
                 break;
             }
             

@@ -54,8 +54,8 @@ void* keyboard(void* arg) {
         {
             // unlocks the mutex and exit loop
             printf("keyboard: you have ended the chat\n");
-            pthread_mutex_unlock(&mutex);
             pthread_mutex_unlock(&keyboardArgs->their_mutex);
+            pthread_mutex_unlock(&mutex);            
             cancelScreen();
             cancelReceive();
             break;
