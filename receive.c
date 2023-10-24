@@ -90,7 +90,6 @@ void* receive(void* arg) {
         {   
             pthread_mutex_unlock(&mutex);
             printf("recv: they ended the chat\n");
-            cancelReceive();
             break;
         }
 

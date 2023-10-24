@@ -73,7 +73,6 @@ void* sends(void* arg) {
             {
                 printf("Send: You have ended the chat\n");
                 pthread_mutex_unlock(&mutex);
-                cancelSend();
                 break;
             }
 

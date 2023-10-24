@@ -6,6 +6,7 @@
 #include "screen.h"
 #include "receive.h"
 #include "send.h"
+#include "manage_thread.h"
 
 static pthread_t keyboardThread, screenThread, receiveThread, sendThread;
 
