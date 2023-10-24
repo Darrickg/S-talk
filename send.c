@@ -50,7 +50,7 @@ void* sends(void* arg) {
         exit(EXIT_FAILURE);
     }
 
-    while(1)
+    while(!should_shutdown)
     {
         // locks the mutex
         pthread_mutex_lock(&mutex);
@@ -69,11 +69,11 @@ void* sends(void* arg) {
                 perror("sendto failed");
             }
 
-            if (strcmp(input, "!\n") == 0 || getFlag() == 1)
+            if (strcmp(input, "!\n") == 0)
             {
-                flipSwitch();
+                should_shutdown = 1;
                 printf("Send: You have ended the chat\n");
-                pthread_mutex_unlock(&mutex);
+                // pthread_mutex_unlock(&mutex);
                 break;
             }
 

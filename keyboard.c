@@ -21,7 +21,7 @@ waits for an input from the user, puts it in the sent list
 arguments: our list, our mutex
 */
 
-void* keyboard(void* arg) {
+void* keyboard(!should_shutdown) {
 
     struct KeyboardScreenArgs* keyboardArgs = (struct KeyboardScreenArgs*)arg;
 
@@ -50,12 +50,12 @@ void* keyboard(void* arg) {
         }
 
         // check to see if the user wants to exit
-        if (strcmp(input, "!\n") == 0|| getFlag() == 1)
+        if (strcmp(input, "!\n") == 0)
         {   
-            flipSwitch();
+            should_shutdown = 1;
             // unlocks the mutex and exit loop
             printf("keyboard: you have ended the chat\n");
-            pthread_mutex_unlock(&mutex);
+            // pthread_mutex_unlock(&mutex);
 
             break;
         }

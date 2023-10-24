@@ -56,7 +56,7 @@ void* receive(void* arg) {
         exit(EXIT_FAILURE);
     }
 
-    while(1)
+    while(!should_shutdown)
     {
         char input[MESSAGE_LENGTH];
         struct sockaddr_storage client_addr;
@@ -86,10 +86,10 @@ void* receive(void* arg) {
             pthread_mutex_unlock(&mutex);
         }
 
-        if (strcmp(input, "!\n") == 0 || getFlag() == 1)
+        if (strcmp(input, "!\n") == 0)
         {   
-            flipSwitch();
-            pthread_mutex_unlock(&mutex);
+            should_shutdown = 1;
+            // pthread_mutex_unlock(&mutex);
             printf("recv: they ended the chat\n");
             break;
         }

@@ -14,8 +14,9 @@
 #define OURPORT "8080"
 #define THEIRPORT "8081"
 
+int should_shutdown = 0;
+
 int main() {
-    initiateFlag();
 
     // address and port stuff
     // FIXME: obviously this needs to change

@@ -28,7 +28,7 @@ void* screen(void* arg) {
     List* list = screenArgs->list;
     pthread_mutex_t mutex = screenArgs->mutex;
 
-    while(1)
+    while(!should_shutdown)
     {
         // locks the mutex
         pthread_mutex_lock(&mutex);
@@ -40,11 +40,11 @@ void* screen(void* arg) {
             // FIXME: im not sure if this is how u print a string from an input
             char* input = List_first(list);
 
-            if (strcmp(input, "!\n") == 0 || getFlag() == 1)
+            if (strcmp(input, "!\n") == 0)
             {   
-                flipSwitch();
+                should_shutdown = 1;
                 printf("screen: they have ended the chat\n");
-                pthread_mutex_unlock(&mutex);
+                // pthread_mutex_unlock(&mutex);
                 break;
             }
             
