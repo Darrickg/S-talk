@@ -33,25 +33,32 @@ int main(int argc, char * argv[]) {
     pthread_mutex_init(&ourMutex, NULL);
     pthread_mutex_init(&theirMutex, NULL);
 
+    // create flag
+    int flag = 0;
+
     // create structs
     struct KeyboardScreenArgs keyboardArgs;
     keyboardArgs.list = ourList;
     keyboardArgs.mutex = ourMutex;
+    keyboardArgs.flag = &flag;
 
     struct KeyboardScreenArgs screenArgs;
     screenArgs.list = theirList;
     screenArgs.mutex = theirMutex;
+    screenArgs.flag = &flag;
 
     struct RecvArgs recvArgs;
     recvArgs.list = theirList;
     recvArgs.mutex = theirMutex;
     recvArgs.port = ourPort;
+    recvArgs.flag = &flag;
 
     struct SendArgs sendArgs;
     sendArgs.list = ourList;
     sendArgs.mutex = ourMutex;
     sendArgs.address = theirAddress;
     sendArgs.port = theirPort;
+    sendArgs.flag = &flag;
 
     // create and start threads
     pthread_t keyboardThread, screenThread, receiveThread, sendThread;

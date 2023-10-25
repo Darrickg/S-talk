@@ -29,6 +29,12 @@ void* keyboard(void* arg) {
 
     while(1)
     {
+        if (*(keyboardArgs->flag) != 0)
+        {
+            printf("keyboard: they have ended the chat\n");
+            break;
+        }
+
         // gets the input from user
         char input[MESSAGE_LENGTH];
         printf("Enter message to send (or '!' to quit): ");
@@ -51,9 +57,9 @@ void* keyboard(void* arg) {
         // check to see if the user wants to exit
         if (strcmp(input, "!\n") == 0)
         {
-            // unlocks the mutex and exit loop
+            // exit loop
             printf("keyboard: you have ended the chat\n");
-            pthread_mutex_unlock(&mutex);
+            *(keyboardArgs->flag) = 1;
             break;
         }
 

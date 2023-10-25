@@ -51,6 +51,12 @@ void* sends(void* arg) {
 
     while(1)
     {
+        if (*(sendArgs->flag) != 0)
+        {
+            printf("send: they have ended the chat\n");
+            break;
+        }
+
         // locks the mutex
         pthread_mutex_lock(&mutex);
 

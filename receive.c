@@ -57,6 +57,12 @@ void* receive(void* arg) {
 
     while(1)
     {
+        if (*(recvArgs->flag) != 0)
+        {
+            printf("recv: you have ended the chat\n");
+            break;
+        }
+
         char input[MESSAGE_LENGTH];
         struct sockaddr_storage client_addr;
         socklen_t client_addr_len = sizeof(client_addr);
@@ -87,8 +93,7 @@ void* receive(void* arg) {
 
         if (strcmp(input, "!\n") == 0)
         {   
-
-            pthread_mutex_unlock(&mutex);
+            *(recvArgs->flag) = 1;
             printf("recv: they ended the chat\n");
             break;
         }
