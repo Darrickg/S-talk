@@ -24,11 +24,13 @@ void* screen(void* arg) {
 
     struct KeyboardScreenArgs* screenArgs = (struct KeyboardScreenArgs*)arg;
 
+    // create arguments from structs
     List* list = screenArgs->list;
     pthread_mutex_t mutex = screenArgs->mutex;
 
     while(1)
     {
+        // checks for thread cancels
         pthread_testcancel();
     
         // locks the mutex
@@ -41,15 +43,16 @@ void* screen(void* arg) {
             // FIXME: im not sure if this is how u print a string from an input
             char* input = List_first(list);
 
+            // if they send a !
             if (strcmp(input, "!\n") == 0)
             {
-                fputs("screen: they have ended the chat\n", stdout);
                 pthread_mutex_unlock(&mutex);
                 break;
             }
             
-            fputs("Message: ", stdout);
+            fputs("\nTheir Message: ", stdout);
             fputs(input, stdout);
+            fputs("\n", stdout);
 
             // removes an item from the list
             List_remove(list);

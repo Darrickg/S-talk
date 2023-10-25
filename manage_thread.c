@@ -18,21 +18,17 @@ void initialize_threads(pthread_t keyboard, pthread_t screen, pthread_t receive,
 }
 
 void cancelReceive(){
-    fputs("recv: cancel called\n", stdout);
     pthread_cancel(receiveThread);
 }
 
 void cancelKeyboard(){
-    fputs("keyboard: cancel called\n", stdout);
     pthread_cancel(keyboardThread);
 }
 
 void cancelScreen(){
-    
     pthread_cancel(screenThread);
 }
 
 void cancelSend(){
-    fputs("send: cancel called\n", stdout);
     pthread_cancel(sendThread);
 }

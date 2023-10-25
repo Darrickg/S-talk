@@ -2,8 +2,12 @@
 CMPT 300 Assignment 2: S-talk
 by Darrick Gunawan and Dina Zeng
 
-Issues:
-- when the other party sends a message, it has skip line issues for both sender and receiver (printing issue)
-- when one party ends a message, it doesent fully end it until both parties send a !, needs to be fixed (use a shutdown module)
-- TODO: use addresses and ports of csil machines and not local DONE
-- also double check with the assignment page incase we missed any features
+How to run:
+make
+s-talk [my port number] [remote machine name] [remote port number]
+make clean
+
+How the program works:
+- connect to each other
+- send messages to each other
+- type ! to end the chat

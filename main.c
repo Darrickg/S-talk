@@ -14,14 +14,22 @@
 #include "send.h"
 #include "manage_thread.h"
 
+// originally used for testing
 #define THEIRADDRESS "127.0.0.1"
 #define OURPORT "8080"
 #define THEIRPORT "8081"
 
 int main(int argc, char * argv[]) {
 
+    // check to see if arg number is correct
+    if (argc != 4)
+    {
+        fputs("Arguments not valid. Please use this structure:\n", stdout);
+        fputs("s-talk [my port number] [remote machine name] [remote port number]\n", stdout);
+        exit(EXIT_FAILURE);
+    }
+
     // address and port stuff
-    // FIXME: obviously this needs to change
     char* ourPort = argv[1]; // OURPORT;
     char* theirAddress = argv[2]; // THEIRADDRESS;
     char* theirPort = argv[3]; // THEIRPORT
@@ -38,19 +46,14 @@ int main(int argc, char * argv[]) {
     pthread_mutex_init(&ourMutex, NULL);
     pthread_mutex_init(&theirMutex, NULL);
 
-    // create flag
-    int flag = 0;
-
     // create structs
     struct KeyboardScreenArgs keyboardArgs;
     keyboardArgs.list = ourList;
     keyboardArgs.mutex = ourMutex;
-    keyboardArgs.flag = &flag;
 
     struct KeyboardScreenArgs screenArgs;
     screenArgs.list = theirList;
     screenArgs.mutex = theirMutex;
-    screenArgs.flag = &flag;
 
     // recv sockets
     // initialise address
@@ -85,7 +88,6 @@ int main(int argc, char * argv[]) {
     recvArgs.list = theirList;
     recvArgs.mutex = theirMutex;
     recvArgs.socket = udpSocket_recv;
-    recvArgs.flag = &flag;
 
     // send sockets
     // initialise address
@@ -114,8 +116,8 @@ int main(int argc, char * argv[]) {
     sendArgs.mutex = ourMutex;
     sendArgs.socket = udpSocket_send;
     sendArgs.server_info = server_info_send;
-    sendArgs.flag = &flag;
 
+    // rules for thread cancels
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
@@ -123,13 +125,12 @@ int main(int argc, char * argv[]) {
     // create and start threads
     pthread_t keyboardThread, screenThread, receiveThread, sendThread;
 
-    // initialize_threads(pthread_create(&keyboardThread, NULL, keyboard, (void*)&keyboardArgs), pthread_create(&screenThread, NULL, screen, (void*)&screenArgs), pthread_create(&receiveThread, NULL, receive, (void*)&recvArgs), pthread_create(&sendThread, NULL, sends, (void*)&sendArgs));
-
     pthread_create(&keyboardThread, NULL, keyboard, (void*)&keyboardArgs);
     pthread_create(&screenThread, NULL, screen, (void*)&screenArgs);
     pthread_create(&receiveThread, NULL, receive, (void*)&recvArgs);
     pthread_create(&sendThread, NULL, sends, (void*)&sendArgs);
-
+    
+    // so we have thread cancels
     initialize_threads(keyboardThread, screenThread, receiveThread, sendThread);
 
     // wait for threads to finish
@@ -138,13 +139,19 @@ int main(int argc, char * argv[]) {
     pthread_join(receiveThread, NULL);
     pthread_join(sendThread, NULL);
 
+    fputs("\nThe connection has ended.\n", stdout);
+
     // cleanup and exit
+
+    // free recv sockets
     close(udpSocket_recv);
     freeaddrinfo(server_info_recv);
 
+    // free send sockets
     close(udpSocket_send);
     freeaddrinfo(server_info_send);
 
+    // destroy mutexes and free lists
     pthread_mutex_destroy(&ourMutex);
     pthread_mutex_destroy(&theirMutex);
     List_free(ourList, NULL);

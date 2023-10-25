@@ -28,13 +28,14 @@ void* keyboard(void* arg) {
     List* list = keyboardArgs->list;
     pthread_mutex_t mutex = keyboardArgs->mutex;
 
+    fputs("Enter message to send (or '!' to quit)\n", stdout);
+
     while(1)
     {
         pthread_testcancel();
       
         // gets the input from user
         char input[MESSAGE_LENGTH];
-        fputs("Enter message to send (or '!' to quit): ", stdout);
         fgets(input, sizeof(input), stdin);
 
         // add to the list of words to be sent
@@ -53,8 +54,7 @@ void* keyboard(void* arg) {
         if (strcmp(input, "!\n") == 0)
         {
             // exit loop
-            fputs("keyboard: you have ended the chat\n", stdout);
-            *(keyboardArgs->flag) = 1;
+            fputs("\nYou have ended the chat\n", stdout);
 
             cancelReceive();
             cancelScreen();

@@ -16,14 +16,12 @@
 struct KeyboardScreenArgs {
     List* list;
     pthread_mutex_t mutex;
-    int* flag;
 };
 
 struct RecvArgs {
     List* list;
     pthread_mutex_t mutex;
     int socket;
-    int* flag;
 };
 
 struct SendArgs {
@@ -31,7 +29,6 @@ struct SendArgs {
     pthread_mutex_t mutex;
     int socket;
     struct addrinfo *server_info;
-    int* flag;
 };
 
 #endif
