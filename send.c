@@ -28,36 +28,9 @@ void* sends(void* arg) {
     int udpSocket = sendArgs->socket;
     struct addrinfo *server_info = sendArgs->server_info;
 
-    // // initialize address
-    // struct addrinfo hints, *server_info;
-    // memset(&hints, 0, sizeof(hints));
-    // hints.ai_family = AF_INET; // IPv4
-    // hints.ai_socktype = SOCK_DGRAM; // UDP
-
-    // // gets address information
-    // if (getaddrinfo(address, port, &hints, &server_info) != 0)
-    // {
-    //     perror("getaddrinfo in send failed");
-    //     exit(EXIT_FAILURE);
-    // }
-
-    // // create UDP socket for swending data
-    // int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
-    // if (udpSocket == -1) 
-    // {
-    //     perror("UDP socket creation in send failed");
-    //     exit(EXIT_FAILURE);
-    // }
-
     while(1)
     {
         pthread_testcancel();
-        // if (*(sendArgs->flag) != 0)
-        // {
-        //     printf("send: they have ended the chat with a flag\n");
-        //     pthread_cancel(pthread_self());
-        //     // break;
-        // }
 
         // locks the mutex
         pthread_mutex_lock(&mutex);
@@ -66,7 +39,6 @@ void* sends(void* arg) {
         if (List_count(list) > 0)
         {  
             // gets the message at the top of the queue
-            // FIXME: im not sure if this is how u get a string from list
             char* input = List_first(list);
 
             int send_len = sendto(udpSocket, input, strlen(input), 0, server_info->ai_addr, server_info->ai_addrlen);
@@ -78,7 +50,7 @@ void* sends(void* arg) {
 
             if (strcmp(input, "!\n") == 0)
             {
-                printf("Send: You have ended the chat\n");
+                fputs("Send: You have ended the chat\n", stdout);
                 pthread_mutex_unlock(&mutex);
                 break;
             }
@@ -91,10 +63,6 @@ void* sends(void* arg) {
         pthread_mutex_unlock(&mutex);
 
     }
-
-    // close UDP sockets when done
-    // close(udpSocket);
-    // freeaddrinfo(server_info);
 
     return NULL;
 }

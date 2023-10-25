@@ -31,15 +31,10 @@ void* keyboard(void* arg) {
     while(1)
     {
         pthread_testcancel();
-        // if (*(keyboardArgs->flag) != 0)
-        // {
-        //     printf("keyboard: they have ended the chat\n");
-        //     break;
-        // }
-
+      
         // gets the input from user
         char input[MESSAGE_LENGTH];
-        printf("Enter message to send (or '!' to quit): ");
+        fputs("Enter message to send (or '!' to quit): ", stdout);
         fgets(input, sizeof(input), stdin);
 
         // add to the list of words to be sent
@@ -58,11 +53,12 @@ void* keyboard(void* arg) {
         if (strcmp(input, "!\n") == 0)
         {
             // exit loop
-            printf("keyboard: you have ended the chat\n");
+            fputs("keyboard: you have ended the chat\n", stdout);
             *(keyboardArgs->flag) = 1;
-            // TODO: cancels recv here
+
             cancelReceive();
             cancelScreen();
+            
             break;
         }
 

@@ -30,13 +30,7 @@ void* screen(void* arg) {
     while(1)
     {
         pthread_testcancel();
-        // if (*(screenArgs->flag) != 0)
-        // {
-        //     printf("screen: you have ended the chat with a flag\n");
-        //     pthread_cancel(pthread_self());
-        //     break;
-        // }
-
+    
         // locks the mutex
         pthread_mutex_lock(&mutex);
 
@@ -49,13 +43,13 @@ void* screen(void* arg) {
 
             if (strcmp(input, "!\n") == 0)
             {
-                printf("screen: they have ended the chat\n");
+                fputs("screen: they have ended the chat\n", stdout);
                 pthread_mutex_unlock(&mutex);
                 break;
             }
             
-            // FIXME: should get their name instead of mine
-            printf("They said: %s", input);
+            fputs("Message: ", stdout);
+            fputs(input, stdout);
 
             // removes an item from the list
             List_remove(list);

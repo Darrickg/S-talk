@@ -134,14 +134,9 @@ int main(int argc, char * argv[]) {
 
     // wait for threads to finish
     pthread_join(keyboardThread, NULL);
-    printf("\nit goes here\n");
     pthread_join(screenThread, NULL);
-    printf("\nit goes here\n");
     pthread_join(receiveThread, NULL);
-    printf("\nit goes here\n");
     pthread_join(sendThread, NULL);
-
-    printf("\nit goes here\n");
 
     // cleanup and exit
     close(udpSocket_recv);

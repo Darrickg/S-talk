@@ -22,9 +22,9 @@ int main(int argc, char * argv[]) {
 
     // address and port stuff
     // FIXME: obviously this needs to change
-    char* theirAddress = THEIRADDRESS; // argv[2];
-    char* ourPort = OURPORT; //argv[1];
-    char* theirPort = THEIRPORT; //argv[3];
+    char* ourPort = argv[1]; // OURPORT;
+    char* theirAddress = argv[2]; // THEIRADDRESS;
+    char* theirPort = argv[3]; // THEIRPORT
 
     // initialise lists
     List* ourList = List_create();
@@ -134,14 +134,9 @@ int main(int argc, char * argv[]) {
 
     // wait for threads to finish
     pthread_join(keyboardThread, NULL);
-    printf("\nit goes here\n");
     pthread_join(screenThread, NULL);
-    printf("\nit goes here\n");
     pthread_join(receiveThread, NULL);
-    printf("\nit goes here\n");
     pthread_join(sendThread, NULL);
-
-    printf("\nit goes here\n");
 
     // cleanup and exit
     close(udpSocket_recv);
