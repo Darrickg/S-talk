@@ -61,6 +61,10 @@ int main(int argc, char * argv[]) {
     sendArgs.port = theirPort;
     sendArgs.flag = &flag;
 
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+
     // create and start threads
     pthread_t keyboardThread, screenThread, receiveThread, sendThread;
 
@@ -89,6 +93,5 @@ int main(int argc, char * argv[]) {
     pthread_mutex_destroy(&theirMutex);
     List_free(ourList, NULL);
     List_free(theirList, NULL);
-
     return 0;
 }

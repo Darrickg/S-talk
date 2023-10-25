@@ -51,12 +51,13 @@ void* sends(void* arg) {
 
     while(1)
     {
-        if (*(sendArgs->flag) != 0)
-        {
-            printf("send: they have ended the chat with a flag\n");
-            pthread_cancel(pthread_self());
-            // break;
-        }
+        pthread_testcancel();
+        // if (*(sendArgs->flag) != 0)
+        // {
+        //     printf("send: they have ended the chat with a flag\n");
+        //     pthread_cancel(pthread_self());
+        //     // break;
+        // }
 
         // locks the mutex
         pthread_mutex_lock(&mutex);

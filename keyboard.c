@@ -30,6 +30,7 @@ void* keyboard(void* arg) {
 
     while(1)
     {
+        pthread_testcancel();
         // if (*(keyboardArgs->flag) != 0)
         // {
         //     printf("keyboard: they have ended the chat\n");
@@ -61,7 +62,7 @@ void* keyboard(void* arg) {
             *(keyboardArgs->flag) = 1;
             // TODO: cancels recv here
             cancelReceive();
-            // cancelScreen();
+            cancelScreen();
             break;
         }
 

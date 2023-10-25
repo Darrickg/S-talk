@@ -58,6 +58,7 @@ void* receive(void* arg) {
 
     while(1)
     {
+        pthread_testcancel();
         // if (*(recvArgs->flag) != 0)
         // {
         //     printf("recv: you have ended the chat\n");
@@ -97,7 +98,7 @@ void* receive(void* arg) {
             printf("recv: they ended the chat\n");
             // TODO: cancels keyboard here
             cancelKeyboard();
-            // cancelSend();
+            cancelSend();
             break;
         }
 

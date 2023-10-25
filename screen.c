@@ -29,12 +29,13 @@ void* screen(void* arg) {
 
     while(1)
     {
-        if (*(screenArgs->flag) != 0)
-        {
-            printf("screen: you have ended the chat with a flag\n");
-            pthread_cancel(pthread_self());
-            // break;
-        }
+        pthread_testcancel();
+        // if (*(screenArgs->flag) != 0)
+        // {
+        //     printf("screen: you have ended the chat with a flag\n");
+        //     pthread_cancel(pthread_self());
+        //     break;
+        // }
 
         // locks the mutex
         pthread_mutex_lock(&mutex);
