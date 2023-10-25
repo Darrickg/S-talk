@@ -10,6 +10,7 @@
 #include "list.h"
 #include "mystructs.h"
 #include "receive.h"
+#include "manage_thread.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -57,11 +58,11 @@ void* receive(void* arg) {
 
     while(1)
     {
-        if (*(recvArgs->flag) != 0)
-        {
-            printf("recv: you have ended the chat\n");
-            break;
-        }
+        // if (*(recvArgs->flag) != 0)
+        // {
+        //     printf("recv: you have ended the chat\n");
+        //     break;
+        // }
 
         char input[MESSAGE_LENGTH];
         struct sockaddr_storage client_addr;
@@ -79,7 +80,6 @@ void* receive(void* arg) {
         input[recv_len] = '\0';
 
         // push into list
-        // FIXME: im not actually sure if this is how add it to the list
         if (strcmp(input, "\n") != 0)
         {
             // locks the mutex
@@ -95,6 +95,9 @@ void* receive(void* arg) {
         {   
             *(recvArgs->flag) = 1;
             printf("recv: they ended the chat\n");
+            // TODO: cancels keyboard here
+            cancelKeyboard();
+            // cancelSend();
             break;
         }
 

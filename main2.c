@@ -8,6 +8,7 @@
 #include "screen.h"
 #include "receive.h"
 #include "send.h"
+#include "manage_thread.h"
 
 #define THEIRADDRESS "127.0.0.1"
 #define OURPORT "8081"
@@ -63,16 +64,25 @@ int main(int argc, char * argv[]) {
     // create and start threads
     pthread_t keyboardThread, screenThread, receiveThread, sendThread;
 
+    // initialize_threads(pthread_create(&keyboardThread, NULL, keyboard, (void*)&keyboardArgs), pthread_create(&screenThread, NULL, screen, (void*)&screenArgs), pthread_create(&receiveThread, NULL, receive, (void*)&recvArgs), pthread_create(&sendThread, NULL, sends, (void*)&sendArgs));
+
     pthread_create(&keyboardThread, NULL, keyboard, (void*)&keyboardArgs);
     pthread_create(&screenThread, NULL, screen, (void*)&screenArgs);
     pthread_create(&receiveThread, NULL, receive, (void*)&recvArgs);
     pthread_create(&sendThread, NULL, sends, (void*)&sendArgs);
 
+    initialize_threads(keyboardThread, screenThread, receiveThread, sendThread);
+
     // wait for threads to finish
     pthread_join(keyboardThread, NULL);
+    printf("\nit goes here\n");
     pthread_join(screenThread, NULL);
+    printf("\nit goes here\n");
     pthread_join(receiveThread, NULL);
+    printf("\nit goes here\n");
     pthread_join(sendThread, NULL);
+
+    printf("\nit goes here\n");
 
     // cleanup and exit
     pthread_mutex_destroy(&ourMutex);

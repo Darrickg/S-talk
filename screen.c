@@ -31,8 +31,9 @@ void* screen(void* arg) {
     {
         if (*(screenArgs->flag) != 0)
         {
-            printf("screen: you have ended the chat\n");
-            break;
+            printf("screen: you have ended the chat with a flag\n");
+            pthread_cancel(pthread_self());
+            // break;
         }
 
         // locks the mutex

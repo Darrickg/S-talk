@@ -11,6 +11,7 @@
 #include "list.h"
 #include "mystructs.h"
 #include "keyboard.h"
+#include "manage_thread.h"
 
 #define MESSAGE_LENGTH 1024
 
@@ -29,11 +30,11 @@ void* keyboard(void* arg) {
 
     while(1)
     {
-        if (*(keyboardArgs->flag) != 0)
-        {
-            printf("keyboard: they have ended the chat\n");
-            break;
-        }
+        // if (*(keyboardArgs->flag) != 0)
+        // {
+        //     printf("keyboard: they have ended the chat\n");
+        //     break;
+        // }
 
         // gets the input from user
         char input[MESSAGE_LENGTH];
@@ -41,11 +42,9 @@ void* keyboard(void* arg) {
         fgets(input, sizeof(input), stdin);
 
         // add to the list of words to be sent
-        // FIXME: im not actually sure if this is how add it to the list
         if (strcmp(input, "\n") != 0)
         {
             // locks the mutex before writing to the list
-            // FIXME: should i make sure the string is not empty before i lock it?
             pthread_mutex_lock(&mutex);
 
             List_append(list, input);
@@ -60,6 +59,9 @@ void* keyboard(void* arg) {
             // exit loop
             printf("keyboard: you have ended the chat\n");
             *(keyboardArgs->flag) = 1;
+            // TODO: cancels recv here
+            cancelReceive();
+            // cancelScreen();
             break;
         }
 
