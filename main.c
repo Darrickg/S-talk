@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 
 #include "list.h"
 #include "mystructs.h"
@@ -48,17 +52,68 @@ int main(int argc, char * argv[]) {
     screenArgs.mutex = theirMutex;
     screenArgs.flag = &flag;
 
+    // recv sockets
+    // initialise address
+    struct addrinfo hints_recv, *server_info_recv;
+    memset(&hints_recv, 0, sizeof(hints_recv));
+    hints_recv.ai_family = AF_INET;         // IPv4
+    hints_recv.ai_socktype = SOCK_DGRAM;    // UDP
+    hints_recv.ai_flags = AI_PASSIVE;       // local IP address
+
+    // gets address information
+    if (getaddrinfo(NULL, ourPort, &hints_recv, &server_info_recv) != 0)
+    {
+        perror("getaddrinfo in recv failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // create UDP socket for receiving data
+    int udpSocket_recv = socket(server_info_recv->ai_family, server_info_recv->ai_socktype, server_info_recv->ai_protocol);
+    if (udpSocket_recv == -1) 
+    {
+        perror("UDP socket creation in recv failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // bind socket to local address
+    if (bind(udpSocket_recv, server_info_recv->ai_addr, server_info_recv->ai_addrlen) == -1) {
+        perror("UDP socket bind failed");
+        exit(EXIT_FAILURE);
+    }
+
     struct RecvArgs recvArgs;
     recvArgs.list = theirList;
     recvArgs.mutex = theirMutex;
-    recvArgs.port = ourPort;
+    recvArgs.socket = udpSocket_recv;
     recvArgs.flag = &flag;
+
+    // send sockets
+    // initialise address
+    struct addrinfo hints_send, *server_info_send;
+    memset(&hints_send, 0, sizeof(hints_send));
+    hints_send.ai_family = AF_INET;       // IPv4
+    hints_send.ai_socktype = SOCK_DGRAM;  // UDP
+
+    // gets address information
+    if (getaddrinfo(theirAddress, theirPort, &hints_send, &server_info_send) != 0)
+    {
+        perror("getaddrinfo in send failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // create UDP socket for swending data
+    int udpSocket_send = socket(server_info_send->ai_family, server_info_send->ai_socktype, server_info_send->ai_protocol);
+    if (udpSocket_send == -1) 
+    {
+        perror("UDP socket creation in send failed");
+        exit(EXIT_FAILURE);
+    }
 
     struct SendArgs sendArgs;
     sendArgs.list = ourList;
     sendArgs.mutex = ourMutex;
-    sendArgs.address = theirAddress;
-    sendArgs.port = theirPort;
+    sendArgs.socket = udpSocket_send;
+    sendArgs.server_info = server_info_send;
     sendArgs.flag = &flag;
 
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -89,6 +144,12 @@ int main(int argc, char * argv[]) {
     printf("\nit goes here\n");
 
     // cleanup and exit
+    close(udpSocket_recv);
+    freeaddrinfo(server_info_recv);
+
+    close(udpSocket_send);
+    freeaddrinfo(server_info_send);
+
     pthread_mutex_destroy(&ourMutex);
     pthread_mutex_destroy(&theirMutex);
     List_free(ourList, NULL);

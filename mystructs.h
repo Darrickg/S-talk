@@ -22,15 +22,15 @@ struct KeyboardScreenArgs {
 struct RecvArgs {
     List* list;
     pthread_mutex_t mutex;
-    char* port;
+    int socket;
     int* flag;
 };
 
 struct SendArgs {
     List* list;
     pthread_mutex_t mutex;
-    char* address;
-    char* port;
+    int socket;
+    struct addrinfo *server_info;
     int* flag;
 };
 

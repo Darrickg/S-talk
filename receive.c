@@ -25,36 +25,37 @@ void* receive(void* arg) {
 
     List* list = recvArgs->list;
     pthread_mutex_t mutex = recvArgs->mutex;
-    char* port = recvArgs->port;
+    // char* port = recvArgs->port;
+    int udpSocket = recvArgs->socket;
 
-    // initialize address
-    struct addrinfo hints, *server_info;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET; // IPv4
-    hints.ai_socktype = SOCK_DGRAM; // UDP
-    hints.ai_flags = AI_PASSIVE; // local IP address FIXME: might need to change this
+    // // initialize address
+    // struct addrinfo hints, *server_info;
+    // memset(&hints, 0, sizeof(hints));
+    // hints.ai_family = AF_INET; // IPv4
+    // hints.ai_socktype = SOCK_DGRAM; // UDP
+    // hints.ai_flags = AI_PASSIVE; // local IP address FIXME: might need to change this
 
-    // gets address information
-    // FIXME: some of the variables might need to be changed
-    if (getaddrinfo(NULL, port, &hints, &server_info) != 0)
-    {
-        perror("getaddrinfo in recv failed");
-        exit(EXIT_FAILURE);
-    }
+    // // gets address information
+    // // FIXME: some of the variables might need to be changed
+    // if (getaddrinfo(NULL, port, &hints, &server_info) != 0)
+    // {
+    //     perror("getaddrinfo in recv failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
-    // create UDP socket for receiving data
-    int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
-    if (udpSocket == -1) 
-    {
-        perror("UDP socket creation in recv failed");
-        exit(EXIT_FAILURE);
-    }
+    // // create UDP socket for receiving data
+    // int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+    // if (udpSocket == -1) 
+    // {
+    //     perror("UDP socket creation in recv failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
-    // bind socket to local address
-    if (bind(udpSocket, server_info->ai_addr, server_info->ai_addrlen) == -1) {
-        perror("UDP socket bind failed");
-        exit(EXIT_FAILURE);
-    }
+    // // bind socket to local address
+    // if (bind(udpSocket, server_info->ai_addr, server_info->ai_addrlen) == -1) {
+    //     perror("UDP socket bind failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
     while(1)
     {
@@ -104,8 +105,8 @@ void* receive(void* arg) {
 
     }
 
-    // Close the UDP socket when done
-    close(udpSocket);
-    freeaddrinfo(server_info);
+    // // Close the UDP socket when done
+    // close(udpSocket);
+    // freeaddrinfo(server_info);
     return NULL;
 }

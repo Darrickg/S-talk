@@ -25,29 +25,29 @@ void* sends(void* arg) {
 
     List* list = sendArgs->list;
     pthread_mutex_t mutex = sendArgs->mutex;
-    char* address = sendArgs->address;
-    char* port = sendArgs->port;
+    int udpSocket = sendArgs->socket;
+    struct addrinfo *server_info = sendArgs->server_info;
 
-    // initialize address
-    struct addrinfo hints, *server_info;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET; // IPv4
-    hints.ai_socktype = SOCK_DGRAM; // UDP
+    // // initialize address
+    // struct addrinfo hints, *server_info;
+    // memset(&hints, 0, sizeof(hints));
+    // hints.ai_family = AF_INET; // IPv4
+    // hints.ai_socktype = SOCK_DGRAM; // UDP
 
-    // gets address information
-    if (getaddrinfo(address, port, &hints, &server_info) != 0)
-    {
-        perror("getaddrinfo in send failed");
-        exit(EXIT_FAILURE);
-    }
+    // // gets address information
+    // if (getaddrinfo(address, port, &hints, &server_info) != 0)
+    // {
+    //     perror("getaddrinfo in send failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
-    // create UDP socket for swending data
-    int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
-    if (udpSocket == -1) 
-    {
-        perror("UDP socket creation in send failed");
-        exit(EXIT_FAILURE);
-    }
+    // // create UDP socket for swending data
+    // int udpSocket = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+    // if (udpSocket == -1) 
+    // {
+    //     perror("UDP socket creation in send failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
     while(1)
     {
@@ -93,8 +93,8 @@ void* sends(void* arg) {
     }
 
     // close UDP sockets when done
-    close(udpSocket);
-    freeaddrinfo(server_info);
+    // close(udpSocket);
+    // freeaddrinfo(server_info);
 
     return NULL;
 }
